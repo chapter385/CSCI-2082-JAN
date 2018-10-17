@@ -1,12 +1,13 @@
 For Display:
 - MainDisplay class to display the GUI
-- There may be other smaller classes (?) to display part of the GUI
+- There will be other smaller classes to display parts of the GUI:
 
 For Background Work
 - Manager class to receive trigger from GUI, execute functions of other classes and return result for the GUI to display  
-- Box class to hold (color or order) value of boxes in the GUI
-- BoxCollection class (maybe queue or stack in array or linked list) to hold list of boxes
-- Level class (?)
-- Saved_Score class (?)
-- Report class (?)
+- Box class to hold (color or order) values of boxes displayed in the GUI
+- BoxCollection class ( queue or stack in array or linked list) to hold list of boxes
+- Level class hold values to determine the difficulity of the games like speed, time, number of box
+- Player class hold player's input name and their highest score
+- PlayerCollection class to hold list of ones have played the games
+
 
