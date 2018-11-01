@@ -6,8 +6,6 @@ public class BoxStack<T> {
 	private Box<T> head;
 	private int count;
 	
-	private String coords = "" + (String)head.getX() + ", " +  head.getY();	
-	
 	public BoxStack() {
 		count = 0;
 	}
@@ -20,14 +18,14 @@ public class BoxStack<T> {
 		if(head == null)
 			throw new EmptyStackException();
 
-		return (T) coords;
+		return head;
 	}
 	
 	public T pop() {
 		if(head == null)
 			throw new EmptyStackException();
 		
-		T top = (T) coords;
+		T top = head;
 		
 		head = head.getLink();
 		
