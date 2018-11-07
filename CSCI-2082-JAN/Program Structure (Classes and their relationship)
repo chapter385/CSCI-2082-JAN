@@ -1,0 +1,12 @@
+For Display:
+- MainDisplay class to display the GUI
+- There may be other smaller classes (?) to display part of the GUI
+
+For Background Work
+- Manager class to receive trigger from GUI, execute functions of other classes and return result for the GUI to display  
+- Box class to hold (color or order) value of boxes in the GUI
+- BoxCollection class (maybe queue or stack in array or linked list) to hold list of boxes
+- Level class (?)
+- Saved_Score class (?)
+- Report class (?)
+
