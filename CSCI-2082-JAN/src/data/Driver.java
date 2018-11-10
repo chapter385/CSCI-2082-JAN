@@ -66,7 +66,6 @@ public class Driver {
   				inCursor = inCursor.getLink();
   				outCursor = outCursor.getLink();
   			}
-  			
   			return true;
   		}
   	}
