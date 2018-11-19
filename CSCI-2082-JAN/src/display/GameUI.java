@@ -53,10 +53,10 @@ public class GameUI extends JFrame implements ActionListener {
 		JPanel boxMatrix = new JPanel();
 		boxMatrix.setLayout(new GridLayout(5,5));
 		for(int i=0;i<5;i++)
-			for(int j=0;j<5;j++) {				
+			for(int j=0;j<5;j++) {								
 				boxes[i][j] = new BoxButton("",i,j);
 				boxes[i][j].addActionListener(this);
-				
+				boxes[i][j].setEnabled(false);
 				boxMatrix.add(boxes[i][j]);
 			}		
 		this.add(boxMatrix, BorderLayout.CENTER);
@@ -101,7 +101,11 @@ public class GameUI extends JFrame implements ActionListener {
 				
 				for(BoxButton button : tempBoxes) {
 					button.setBackground(null);
-				}			
+				}
+				
+				for(int i=0;i<5;i++)
+					for(int j=0;j<5;j++)	
+						boxes[i][j].setEnabled(true);
 		}
 		
 		// Receive the input of player and return the result		
@@ -135,6 +139,10 @@ public class GameUI extends JFrame implements ActionListener {
 				}
 				inputList.clear();
 				inputCollection.clear();
+				
+				for(int i=0;i<5;i++)
+					for(int j=0;j<5;j++)	
+						boxes[i][j].setEnabled(false);
 			}
 		}
 	}
