@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import data.Box;
+import data.BoxQueue;
 import data.BoxSequence;
 import data.Driver;
 
@@ -29,7 +30,7 @@ public class GameUI extends JFrame implements ActionListener {
 	private Driver driver = new Driver();	
 	
 	// Hold the sequence of box objects selected by player
-	private BoxSequence inputCollection = new BoxSequence();
+	private BoxQueue inputCollection = new BoxQueue();
 	
 	// Hold the sequence of BoxButton objects selected by player
 	ArrayList<BoxButton> inputList = new ArrayList<BoxButton>();
@@ -70,83 +71,85 @@ public class GameUI extends JFrame implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		
+
 		// When the "Start Game" button is clicked
 		// The program display the sequence of boxes
-		if(arg0.getSource().equals(start)) {
-			BoxSequence tempCollection;
+		if (arg0.getSource().equals(start)) {
+			BoxQueue tempQueue;
 
-				tempCollection = driver.generateCollection();
-				ArrayList<BoxButton> tempBoxes = new ArrayList<>();
-				
-				Box cursor;
-				int tempX;
-				int tempY;
-				for(cursor = tempCollection.getHead();cursor != null; cursor = cursor.getLink()) {
-					tempX = cursor.getX();
-					tempY = cursor.getY();
-					tempBoxes.add(boxes[tempX][tempY]);
-				}
-				
-				for(BoxButton button : tempBoxes) {
-					button.setBackground(Color.BLUE);
+			tempQueue = driver.generateCollection();
+			ArrayList<BoxButton> tempBoxes = new ArrayList<>();
 
-					Thread.currentThread();
-					try {
-						Thread.sleep(400);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
+			for (Box temp : tempQueue.getArray()) {
+				tempBoxes.add(boxes[temp.getX()][temp.getY()]);
+			}
+
+			for (BoxButton button : tempBoxes) {
+				button.setBackground(Color.BLUE);
+
+				Thread.currentThread();
+				try {
+					Thread.sleep(400);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
-				
-				for(BoxButton button : tempBoxes) {
-					button.setBackground(null);
-				}
-				
-				for(int i=0;i<5;i++)
-					for(int j=0;j<5;j++)	
-						boxes[i][j].setEnabled(true);
+			}
+
+			for (BoxButton button : tempBoxes) {
+				button.setBackground(null);
+			}
+
+			for (int i = 0; i < 5; i++)
+				for (int j = 0; j < 5; j++)
+					boxes[i][j].setEnabled(true);
 		}
-		
-		// Receive the input of player and return the result		
-		else if(arg0.getSource() instanceof BoxButton) {
-			BoxButton source = (BoxButton)arg0.getSource();
+
+		// Receive the input of player and return the result
+		else if (arg0.getSource() instanceof BoxButton) {
+			BoxButton source = (BoxButton) arg0.getSource();
 			Boolean isExisted = false;
-						
-			for(BoxButton element : inputList) {
-				if(source.equals(element)) {
+
+			for (BoxButton element : inputList) {
+				if (source.equals(element)) {
 					isExisted = true;
 					break;
 				}
 			}
-			if(isExisted == false) {
+			if (isExisted == false) {
 				inputList.add(source);
 				inputCollection.add(source.getX(), source.getY());
 				source.setBackground(Color.BLUE);
 			}
-			
-			if(inputList.size() == 5) {
+
+			if (inputList.size() == 5) {
 				String result;
-				if(driver.compare(inputCollection))
-					result = "Correct Answer";
-				else
-					result = "Wrong Answer";
-				
-				JOptionPane.showMessageDialog(this, result, "Result", JOptionPane.INFORMATION_MESSAGE);
-				
-				for(BoxButton element : inputList) {
-					element.setBackground(null);
+				try {
+					if (driver.compare(inputCollection))
+						result = "Correct Answer";
+					else
+						result = "Wrong Answer";
+					JOptionPane.showMessageDialog(this, result, "Result", JOptionPane.INFORMATION_MESSAGE);
+
+					for (BoxButton element : inputList) {
+						element.setBackground(null);
+					}
+					
+					inputList.clear();
+					inputCollection.clear();
+
+					for (int i = 0; i < 5; i++)
+						for (int j = 0; j < 5; j++)
+							boxes[i][j].setEnabled(false);
+					
+				} catch (CloneNotSupportedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-				inputList.clear();
-				inputCollection.clear();
-				
-				for(int i=0;i<5;i++)
-					for(int j=0;j<5;j++)	
-						boxes[i][j].setEnabled(false);
+
 			}
+
 		}
+
 	}
-	
-	
-	
+
 }

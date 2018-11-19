@@ -1,6 +1,6 @@
 package data;
 
-public class BoxQueue {
+public class BoxQueue implements Cloneable{
 		private Box head;
 		private Box tail;
 		private int count;
@@ -49,24 +49,40 @@ public class BoxQueue {
 		}
 		
 		public void remove() {
+			if(head == null)
+				return;
+			
 			Box temp = head;
 			head = temp.getLink();
 			temp = null;
+			count--;
+			
+			if(count == 0) head = tail = null;
 		}
 		
 		public void clear() {
 			while(head != null)
 				remove();
 		}
+
+		public Box[] getArray() {
+			Box[] boxList = new Box[this.count];
+			Box cursor;
+			int index = 0;
+			for(cursor = head;cursor!=null;cursor = cursor.getLink(), index++) {
+				boxList[index] = cursor;
+			}
+			return boxList;
+		}
 		
-		public Box getHead() {
+/*		public Box getHead() {
 			return head;
 		}
 
 		public void setHead(Box head) {
 			this.head = head;
 		}
-
+*/
 		public int getCount() {
 			return count;
 		}
