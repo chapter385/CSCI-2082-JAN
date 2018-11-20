@@ -1,0 +1,18 @@
+The Instance variable
+- The level (int type)
+
+Methods
+- Constructor()
+  -parameter: level
+getLevel()
+setLevel()
+
+-get number of boxes()
+  -return int
+  
+  
+ 
+
+
+
+
