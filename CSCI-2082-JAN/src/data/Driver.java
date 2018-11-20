@@ -4,6 +4,8 @@ import java.util.Random;
 public class Driver {
   
 	private BoxQueue outputChain;  
+	
+	//Made public in order for the level count in GameUI to effect numberOfBoxes
 	public Difficulty difficulty = new Difficulty();
    
 	/**
