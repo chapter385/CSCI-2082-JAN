@@ -10,12 +10,12 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import data.Box;
 import data.BoxQueue;
-import data.BoxSequence;
 import data.Driver;
 
 @SuppressWarnings("serial")
@@ -34,7 +34,11 @@ public class GameUI extends JFrame implements ActionListener {
 	
 	// Hold the sequence of BoxButton objects selected by player
 	ArrayList<BoxButton> inputList = new ArrayList<BoxButton>();
-
+	
+	JLabel levelGUI = new JLabel("Level: " + driver.difficulty.getLevel());
+	
+	int levelCount = driver.difficulty.getLevel();
+	
 	public GameUI() {
 		super();
 		this.setVisible(true);
@@ -49,6 +53,7 @@ public class GameUI extends JFrame implements ActionListener {
 		control.setLayout(new FlowLayout());
 		start.addActionListener(this);
 		control.add(start);
+		control.add(levelGUI);
 		this.add(control, BorderLayout.NORTH);
 		
 		JPanel boxMatrix = new JPanel();
@@ -121,13 +126,18 @@ public class GameUI extends JFrame implements ActionListener {
 				source.setBackground(Color.BLUE);
 			}
 
-			if (inputList.size() == 5) {
+			if (inputList.size() == driver.difficulty.getNumberOfBoxes()) {
 				String result;
 				try {
-					if (driver.compare(inputCollection))
+					if (driver.compare(inputCollection)) {
 						result = "Correct Answer";
-					else
+						//Increases level
+						driver.difficulty.setLevel(++levelCount);
+						//Updates the JLabel to display the current level
+						levelGUI.setText("Level: " +  driver.difficulty.getLevel());
+					} else {
 						result = "Wrong Answer";
+					}
 					JOptionPane.showMessageDialog(this, result, "Result", JOptionPane.INFORMATION_MESSAGE);
 
 					for (BoxButton element : inputList) {
