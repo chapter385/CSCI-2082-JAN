@@ -137,6 +137,10 @@ public class GameUI extends JFrame implements ActionListener {
 						levelGUI.setText("Level: " +  driver.difficulty.getLevel());
 					} else {
 						result = "Wrong Answer";
+						//Resets game back to level 1
+						driver.difficulty.setLevel(1);
+						//Updates the JLabel to display the current level
+						levelGUI.setText("Level: " +  driver.difficulty.getLevel());
 					}
 					JOptionPane.showMessageDialog(this, result, "Result", JOptionPane.INFORMATION_MESSAGE);
 
