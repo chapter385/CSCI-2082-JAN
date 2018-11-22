@@ -114,6 +114,12 @@ public class GameUI extends JFrame implements ActionListener {
 			for (BoxButton element : inputList) {
 				if (source.equals(element)) {
 					isExisted = true;
+				       /*	Intended to delete boxes when clicked twice to fix user made mistakes,
+				        *	currently doesn't delete properly. 
+				        *inputCollection.remove();
+				        *inputList.remove(element);
+					*source.setBackground(Color.BLACK);
+					*/
 					break;
 				}
 			}
