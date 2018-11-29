@@ -1,5 +1,6 @@
 package display;
 
+//updated
 import java.awt.BorderLayout;
 import java.awt.Button;
 import java.awt.Color;
@@ -12,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
@@ -25,19 +27,25 @@ public class GameUI extends JFrame implements ActionListener {
 
 	// Hold the grid of box buttons
 	private BoxButton[][] boxes = new BoxButton[5][5];
-	private Button start = new Button("Create Pattern");
+
+	private Button start = new Button("Start Game");
+
 	// Manipulate the sequence of box Object
 	private Driver driver = new Driver();
+
 	// Hold the sequence of box objects selected by player
 	private BoxQueue inputCollection = new BoxQueue();
+
 	// Hold the sequence of BoxButton objects selected by player
 	ArrayList<BoxButton> inputList = new ArrayList<BoxButton>();
-	
+
+	JLabel levelGUI = new JLabel("Level: " + driver.difficulty.getLevel());
+
 	int levelCount = driver.difficulty.getLevel();
-
-	private JPanel control = new JPanel();
-
-	private JPanel boxMatrix = new JPanel();
+	
+	JPanel control = new JPanel();
+	
+	JPanel boxMatrix = new JPanel();
 
 	public GameUI() {
 		super();
@@ -51,6 +59,8 @@ public class GameUI extends JFrame implements ActionListener {
 
 		control.setLayout(new FlowLayout());
 		start.addActionListener(this);
+		control.add(start);
+		this.add(control, BorderLayout.NORTH);
 
 		boxMatrix.setLayout(new GridLayout(5, 5));
 		for (int i = 0; i < 5; i++)
@@ -61,14 +71,45 @@ public class GameUI extends JFrame implements ActionListener {
 				boxes[i][j].setBackground(Color.BLACK);
 				boxMatrix.add(boxes[i][j]);
 			}
+		this.add(boxMatrix, BorderLayout.CENTER);
+		
 		addComponents();
 		editPanels();
-
 	}
 
 	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		GameUI test = new GameUI();
+	}
+
+	public void displayPattern() {
+		BoxQueue tempQueue;
+
+		tempQueue = driver.generateCollection();
+		ArrayList<BoxButton> tempBoxes = new ArrayList<>();
+
+		for (Box temp : tempQueue.getArray()) {
+			tempBoxes.add(boxes[temp.getX()][temp.getY()]);
+		}
+
+		for (BoxButton button : tempBoxes) {
+			button.setBackground(Color.BLUE);
+
+			Thread.currentThread();
+			try {
+				Thread.sleep(400);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+
+		for (BoxButton button : tempBoxes) {
+			button.setBackground(Color.BLACK);
+		}
+
+		for (int i = 0; i < 5; i++)
+			for (int j = 0; j < 5; j++)
+				boxes[i][j].setEnabled(true);
 	}
 
 	@Override
@@ -77,35 +118,10 @@ public class GameUI extends JFrame implements ActionListener {
 		// When the "Start Game" button is clicked
 		// The program display the sequence of boxes
 		if (arg0.getSource().equals(start)) {
-			BoxQueue tempQueue;
-
-			tempQueue = driver.generateCollection();
-			ArrayList<BoxButton> tempBoxes = new ArrayList<>();
-
-			for (Box temp : tempQueue.getArray()) {
-				tempBoxes.add(boxes[temp.getX()][temp.getY()]);
-			}
-
-			for (BoxButton button : tempBoxes) {
-				button.setBackground(Color.BLUE);
-
-				Thread.currentThread();
-				try {
-					Thread.sleep(400);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-
-			for (BoxButton button : tempBoxes) {
-				button.setBackground(Color.BLACK);
-			}
-
-			for (int i = 0; i < 5; i++)
-				for (int j = 0; j < 5; j++)
-					boxes[i][j].setEnabled(true);
+			displayPattern();
+			start.setEnabled(false);
+			// start.setVisible(false);
 		}
-
 		// Receive the input of player and return the result
 		else if (arg0.getSource() instanceof BoxButton) {
 			BoxButton source = (BoxButton) arg0.getSource();
@@ -114,12 +130,9 @@ public class GameUI extends JFrame implements ActionListener {
 			for (BoxButton element : inputList) {
 				if (source.equals(element)) {
 					isExisted = true;
-				       /*	Intended to delete boxes when clicked twice to fix user made mistakes,
-				        *	currently doesn't delete properly. 
-				        *inputCollection.remove();
-				        *inputList.remove(element);
-					*source.setBackground(Color.BLACK);
-					*/
+					inputList.remove(element);
+					inputCollection.remove();
+					element.setBackground(Color.BLACK);
 					break;
 				}
 			}
@@ -131,43 +144,69 @@ public class GameUI extends JFrame implements ActionListener {
 
 			if (inputList.size() == driver.difficulty.getNumberOfBoxes()) {
 				String result;
+				Object[] options = new Object[2];
+
 				try {
 					if (driver.compare(inputCollection)) {
 						result = "Correct Answer";
 						// Increases level
 						driver.difficulty.setLevel(++levelCount);
+						boxMatrix.setBorder(
+								new TitledBorder(null, "Level: " + levelCount, TitledBorder.LEADING, 
+										TitledBorder.BELOW_TOP, null, Color.WHITE));
+						// Set options
+						options[0] = "Continue";
+						options[1] = "Quit";
 					} else {
 						result = "Wrong Answer";
 						// Resets game back to level 1
-						levelCount = 1;
-						driver.difficulty.setLevel(levelCount);
+						driver.difficulty.setLevel(1);
+						boxMatrix.setBorder(
+								new TitledBorder(null, "Level: " + levelCount, TitledBorder.LEADING, 
+										TitledBorder.BELOW_TOP, null, Color.WHITE));
+						// Set options
+						options[0] = "Retry";
+						options[1] = "Quit";
 					}
-					// Updates the JLabel to display the current level
-					boxMatrix.setBorder(
-							new TitledBorder(null, "Level: " + levelCount, TitledBorder.LEADING, 
-									TitledBorder.BELOW_TOP, null, Color.WHITE));
-					JOptionPane.showMessageDialog(this, result, "Result", JOptionPane.INFORMATION_MESSAGE);
+					int input = JOptionPane.showOptionDialog(this, result, "Result", JOptionPane.YES_NO_OPTION,
+							JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 
-					for (BoxButton element : inputList) {
-						element.setBackground(new Color(0,0,0));
-					}
+					// Updates the JLabel to display the current level
+					levelGUI.setText("Level: " + driver.difficulty.getLevel());
+
+					for (BoxButton element : inputList)
+						element.setBackground(Color.BLACK);
 
 					inputList.clear();
 					inputCollection.clear();
 
 					for (int i = 0; i < 5; i++)
-						for (int j = 0; j < 5; j++) {
+						for (int j = 0; j < 5; j++)
 							boxes[i][j].setEnabled(false);
-						}
 
+//					JOptionPane.showMessageDialog(this, result, "Result", JOptionPane.INFORMATION_MESSAGE);
+
+					if (input == JOptionPane.YES_OPTION) {
+						if (driver.difficulty.getLevel() == 1) {
+							start.setEnabled(true);
+							// start.setVisible(true);
+						} else
+							displayPattern();
+					} else {
+						this.dispose();
+					}
 				} catch (CloneNotSupportedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-			}
-		}
-	}
 
+			}
+
+		}
+		
+
+	}
+	
 	public void addComponents() {
 		control.add(start);
 		this.add(control, BorderLayout.NORTH);
