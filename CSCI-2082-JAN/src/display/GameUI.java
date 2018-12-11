@@ -125,7 +125,7 @@ public class GameUI extends JFrame implements ActionListener {
 
 			Thread.currentThread();
 			try {
-				Thread.sleep(400);
+				Thread.sleep(500);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
