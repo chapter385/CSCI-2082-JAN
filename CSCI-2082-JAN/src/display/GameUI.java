@@ -34,17 +34,15 @@ public class GameUI extends JFrame implements ActionListener {
 	private Driver driver = new Driver();
 
 	// Hold the sequence of box objects selected by player
-	private BoxQueue inputCollection = new BoxQueue();
+	private BoxQueue inputQueue = new BoxQueue();
 
 	// Hold the sequence of BoxButton objects selected by player
 	ArrayList<BoxButton> inputList = new ArrayList<BoxButton>();
 
 	JLabel levelGUI = new JLabel("Level: " + driver.difficulty.getLevel());
 
-	int levelCount = driver.difficulty.getLevel();
-	
 	JPanel control = new JPanel();
-	
+
 	JPanel boxMatrix = new JPanel();
 
 	public GameUI() {
@@ -57,6 +55,28 @@ public class GameUI extends JFrame implements ActionListener {
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setLayout(new BorderLayout());
 
+		addComponents();
+		editPanels();
+	}
+
+	
+	
+	
+	@SuppressWarnings("unused")
+	public static void main(String[] args) {
+		GameUI test = new GameUI();
+	}
+	
+	
+	
+	
+	
+	public void setLevelDisplay(int level) {
+		boxMatrix.setBorder(new TitledBorder(null, "Level: " + level, TitledBorder.LEADING, TitledBorder.BELOW_TOP,
+				null, Color.WHITE));
+	}
+	
+	public void addComponents() {
 		control.setLayout(new FlowLayout());
 		start.addActionListener(this);
 		control.add(start);
@@ -72,16 +92,24 @@ public class GameUI extends JFrame implements ActionListener {
 				boxMatrix.add(boxes[i][j]);
 			}
 		this.add(boxMatrix, BorderLayout.CENTER);
-		
-		addComponents();
-		editPanels();
+
+		control.add(start);
+		this.add(control, BorderLayout.NORTH);
+		this.add(boxMatrix, BorderLayout.CENTER);
 	}
 
-	@SuppressWarnings("unused")
-	public static void main(String[] args) {
-		GameUI test = new GameUI();
-	}
+	public void editPanels() {
+		start.setPreferredSize(new Dimension(200, 40));
+		start.setFont(new Font(null, Font.PLAIN, 20));
+		start.setBackground(new Color(51, 51, 51));
+		start.setForeground(Color.WHITE);
 
+		control.setBackground(new Color(105, 105, 105));
+
+		setLevelDisplay(driver.difficulty.getLevel());
+		boxMatrix.setBackground(new Color(51, 51, 51));
+	}
+	
 	public void displayPattern() {
 		BoxQueue tempQueue;
 
@@ -120,7 +148,6 @@ public class GameUI extends JFrame implements ActionListener {
 		if (arg0.getSource().equals(start)) {
 			displayPattern();
 			start.setEnabled(false);
-			// start.setVisible(false);
 		}
 		// Receive the input of player and return the result
 		else if (arg0.getSource() instanceof BoxButton) {
@@ -136,7 +163,7 @@ public class GameUI extends JFrame implements ActionListener {
 			}
 			if (isExisted == false) {
 				inputList.add(source);
-				inputCollection.add(source.getX(), source.getY());
+				inputQueue.add(source.getX(), source.getY());
 				source.setBackground(Color.BLUE);
 			}
 
@@ -145,13 +172,18 @@ public class GameUI extends JFrame implements ActionListener {
 				Object[] options = new Object[2];
 
 				try {
-					if (driver.compare(inputCollection)) {
+					if (driver.isMaxLevel() && driver.compare(inputQueue)) {
+						result = "Correct Answer";
+						driver.difficulty.setLevel(1);
+						setLevelDisplay(driver.difficulty.getLevel());
+						// Set options
+						options[0] = "Retry";
+						options[1] = "Quit";
+					} else if (driver.compare(inputQueue)) {
 						result = "Correct Answer";
 						// Increases level
-						driver.difficulty.setLevel(++levelCount);
-						boxMatrix.setBorder(
-								new TitledBorder(null, "Level: " + levelCount, TitledBorder.LEADING, 
-										TitledBorder.BELOW_TOP, null, Color.WHITE));
+						driver.difficulty.increaseByOne();
+						setLevelDisplay(driver.difficulty.getLevel());
 						// Set options
 						options[0] = "Continue";
 						options[1] = "Quit";
@@ -159,9 +191,7 @@ public class GameUI extends JFrame implements ActionListener {
 						result = "Wrong Answer";
 						// Resets game back to level 1
 						driver.difficulty.setLevel(1);
-						boxMatrix.setBorder(
-								new TitledBorder(null, "Level: " + levelCount, TitledBorder.LEADING, 
-										TitledBorder.BELOW_TOP, null, Color.WHITE));
+						setLevelDisplay(driver.difficulty.getLevel());
 						// Set options
 						options[0] = "Retry";
 						options[1] = "Quit";
@@ -176,18 +206,15 @@ public class GameUI extends JFrame implements ActionListener {
 						element.setBackground(Color.BLACK);
 
 					inputList.clear();
-					inputCollection.clear();
+					inputQueue.clear();
 
 					for (int i = 0; i < 5; i++)
 						for (int j = 0; j < 5; j++)
 							boxes[i][j].setEnabled(false);
 
-//					JOptionPane.showMessageDialog(this, result, "Result", JOptionPane.INFORMATION_MESSAGE);
-
 					if (input == JOptionPane.YES_OPTION) {
 						if (driver.difficulty.getLevel() == 1) {
 							start.setEnabled(true);
-							// start.setVisible(true);
 						} else
 							displayPattern();
 					} else {
@@ -201,27 +228,6 @@ public class GameUI extends JFrame implements ActionListener {
 			}
 
 		}
-		
 
-	}
-	
-	public void addComponents() {
-		control.add(start);
-		this.add(control, BorderLayout.NORTH);
-		this.add(boxMatrix, BorderLayout.CENTER);
-	}
-
-	public void editPanels() {
-		start.setPreferredSize(new Dimension(200, 40));
-		start.setFont(new Font(null, Font.PLAIN, 20));
-		start.setBackground(new Color(51, 51, 51));
-		start.setForeground(Color.WHITE);
-		
-		control.setBackground(new Color(105, 105, 105));
-		
-		boxMatrix.setBorder(
-				new TitledBorder(null, "Level: " + levelCount, TitledBorder.LEADING, 
-						TitledBorder.BELOW_TOP, null, Color.WHITE));
-		boxMatrix.setBackground(new Color(51, 51, 51));
 	}
 }

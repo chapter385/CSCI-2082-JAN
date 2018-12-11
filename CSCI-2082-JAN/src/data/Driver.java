@@ -74,5 +74,12 @@ public class Driver {
   			return true;
   		}
   	}
+  	
+	public boolean isMaxLevel() {
+		if(difficulty.getLevel() == Difficulty.MAX_LEVEL)
+			return true;
+		else
+			return false;
+	}
     
 }
