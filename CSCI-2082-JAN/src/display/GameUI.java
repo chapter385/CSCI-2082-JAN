@@ -4,7 +4,9 @@ package display;
 import java.awt.BorderLayout;
 import java.awt.Button;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,6 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.border.TitledBorder;
 
 import data.Box;
 import data.BoxQueue;
@@ -39,6 +42,10 @@ public class GameUI extends JFrame implements ActionListener {
 	JLabel levelGUI = new JLabel("Level: " + driver.difficulty.getLevel());
 
 	int levelCount = driver.difficulty.getLevel();
+	
+	JPanel control = new JPanel();
+	
+	JPanel boxMatrix = new JPanel();
 
 	public GameUI() {
 		super();
@@ -50,24 +57,24 @@ public class GameUI extends JFrame implements ActionListener {
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setLayout(new BorderLayout());
 
-		JPanel control = new JPanel();
 		control.setLayout(new FlowLayout());
 		start.addActionListener(this);
 		control.add(start);
-		control.add(levelGUI);
 		this.add(control, BorderLayout.NORTH);
 
-		JPanel boxMatrix = new JPanel();
 		boxMatrix.setLayout(new GridLayout(5, 5));
 		for (int i = 0; i < 5; i++)
 			for (int j = 0; j < 5; j++) {
 				boxes[i][j] = new BoxButton("", i, j);
 				boxes[i][j].addActionListener(this);
 				boxes[i][j].setEnabled(false);
+				boxes[i][j].setBackground(Color.BLACK);
 				boxMatrix.add(boxes[i][j]);
 			}
 		this.add(boxMatrix, BorderLayout.CENTER);
-
+		
+		addComponents();
+		editPanels();
 	}
 
 	@SuppressWarnings("unused")
@@ -97,7 +104,7 @@ public class GameUI extends JFrame implements ActionListener {
 		}
 
 		for (BoxButton button : tempBoxes) {
-			button.setBackground(null);
+			button.setBackground(Color.BLACK);
 		}
 
 		for (int i = 0; i < 5; i++)
@@ -123,6 +130,7 @@ public class GameUI extends JFrame implements ActionListener {
 			for (BoxButton element : inputList) {
 				if (source.equals(element)) {
 					isExisted = true;
+					element.setBackground(Color.BLACK);
 					break;
 				}
 			}
@@ -141,6 +149,9 @@ public class GameUI extends JFrame implements ActionListener {
 						result = "Correct Answer";
 						// Increases level
 						driver.difficulty.setLevel(++levelCount);
+						boxMatrix.setBorder(
+								new TitledBorder(null, "Level: " + levelCount, TitledBorder.LEADING, 
+										TitledBorder.BELOW_TOP, null, Color.WHITE));
 						// Set options
 						options[0] = "Continue";
 						options[1] = "Quit";
@@ -148,6 +159,9 @@ public class GameUI extends JFrame implements ActionListener {
 						result = "Wrong Answer";
 						// Resets game back to level 1
 						driver.difficulty.setLevel(1);
+						boxMatrix.setBorder(
+								new TitledBorder(null, "Level: " + levelCount, TitledBorder.LEADING, 
+										TitledBorder.BELOW_TOP, null, Color.WHITE));
 						// Set options
 						options[0] = "Retry";
 						options[1] = "Quit";
@@ -159,7 +173,7 @@ public class GameUI extends JFrame implements ActionListener {
 					levelGUI.setText("Level: " + driver.difficulty.getLevel());
 
 					for (BoxButton element : inputList)
-						element.setBackground(null);
+						element.setBackground(Color.BLACK);
 
 					inputList.clear();
 					inputCollection.clear();
@@ -187,6 +201,27 @@ public class GameUI extends JFrame implements ActionListener {
 			}
 
 		}
+		
 
+	}
+	
+	public void addComponents() {
+		control.add(start);
+		this.add(control, BorderLayout.NORTH);
+		this.add(boxMatrix, BorderLayout.CENTER);
+	}
+
+	public void editPanels() {
+		start.setPreferredSize(new Dimension(200, 40));
+		start.setFont(new Font(null, Font.PLAIN, 20));
+		start.setBackground(new Color(51, 51, 51));
+		start.setForeground(Color.WHITE);
+		
+		control.setBackground(new Color(105, 105, 105));
+		
+		boxMatrix.setBorder(
+				new TitledBorder(null, "Level: " + levelCount, TitledBorder.LEADING, 
+						TitledBorder.BELOW_TOP, null, Color.WHITE));
+		boxMatrix.setBackground(new Color(51, 51, 51));
 	}
 }

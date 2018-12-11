@@ -5,7 +5,6 @@ public class Difficulty {
 	private int numberOfBoxes;
 	
 	public Difficulty() {
-	
 		this.level = 1;
 		this.numberOfBoxes = 5;
 	}
@@ -16,9 +15,10 @@ public class Difficulty {
 
 	public void setLevel(int level) {
 		this.level = level;
+		numberOfBoxes = 5 + level - 1;
 	}
 
 	public int getNumberOfBoxes() {
-		return (numberOfBoxes + level) - 1;
+		return numberOfBoxes;
 	}	
 }
