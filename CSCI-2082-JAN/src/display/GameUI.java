@@ -173,14 +173,14 @@ public class GameUI extends JFrame implements ActionListener {
 
 				try {
 					if (driver.isMaxLevel() && driver.compare(inputQueue)) {
-						result = "Correct Answer";
+						result = "CORRECT ANSWER. YOU WON";
 						driver.difficulty.setLevel(1);
 						setLevelDisplay(driver.difficulty.getLevel());
 						// Set options
 						options[0] = "Retry";
 						options[1] = "Quit";
 					} else if (driver.compare(inputQueue)) {
-						result = "Correct Answer";
+						result = "CORRECT ANSWER";
 						// Increases level
 						driver.difficulty.increaseByOne();
 						setLevelDisplay(driver.difficulty.getLevel());
@@ -188,7 +188,7 @@ public class GameUI extends JFrame implements ActionListener {
 						options[0] = "Continue";
 						options[1] = "Quit";
 					} else {
-						result = "Wrong Answer";
+						result = "WRONG ANSWER";
 						// Resets game back to level 1
 						driver.difficulty.setLevel(1);
 						setLevelDisplay(driver.difficulty.getLevel());
